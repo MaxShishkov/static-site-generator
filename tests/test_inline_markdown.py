@@ -107,11 +107,8 @@ class TestSplitNodeDelim(unittest.TestCase):
         node = TextNode("", TextType.TEXT)
         
         new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
-        result_list = [
-            TextNode("", TextType.TEXT),
-        ]
         
-        self.assertEqual(new_nodes, result_list)
+        self.assertEqual(new_nodes, [])
         
     def test_split_empty_string_in_delimiter(self):
         node = TextNode("This is text with a **** word", TextType.TEXT)
@@ -148,11 +145,11 @@ class TestSplitNodeDelim(unittest.TestCase):
         self.assertEqual(result, [])
         
     def test_extract_markdown_links_multiple(self):
-        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        text = "This is text with a link [to boot dev](https://www.example.dev) and [to youtube](https://www.youtube.com)"
         result = extract_markdown_links(text)
         expected = [
-            ("to boot dev", "https://www.boot.dev"),
-            ("to youtube", "https://www.youtube.com/@bootdotdev"),
+            ("to boot dev", "https://www.example.dev"),
+            ("to youtube", "https://www.youtube.com"),
         ]
         
         self.assertEqual(result, expected)
