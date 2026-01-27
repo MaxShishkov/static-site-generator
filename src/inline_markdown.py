@@ -14,10 +14,6 @@ def split_nodes_delimiter(old_nodes:list[TextNode], delimiter:str, text_type:Tex
         if len(split_text) % 2 == 0: #no closing delimiter
             raise Exception("Invalide Markdown syntax")
         
-        if split_text == [""]:
-            new_nodes.append(TextNode("", TextType.TEXT))
-            continue
-        
         for i in range(len(split_text)):
             if i % 2 == 0: #text
                 if split_text[i] != "":
@@ -35,8 +31,40 @@ def extract_markdown_links(text):
     match = re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
     return match
 
-def split_nodes_image(old_nodes):
-    pass
+def split_nodes_image(old_nodes:list[TextNode]) -> list[TextNode]:
+    new_nodes = []
+    
+    for node in old_nodes:
+        if node.text_type != TextType.TEXT:
+            new_nodes.append(node)
+            continue
+        
+        markdown_list = extract_markdown_images(node.text)
+        
+        if not markdown_list:
+            new_nodes.append(node)
+            continue
+        
+        original_text = node.text
+        split_nodes = []
+        
+        for item in markdown_list:
+            image_alt, image_link = item
+            sections = original_text.split(f"![{image_alt}]({image_link})", 1)
+            if sections[0] != "":
+                split_nodes.append(TextNode(sections[0], TextType.TEXT))
+            
+            split_nodes.append(TextNode(image_alt, TextType.IMAGE, image_link))
+            original_text = sections[1]
+            
+        if original_text != "":
+            split_nodes.append(TextNode(original_text, TextType.TEXT))
+            
+        if split_nodes:
+            new_nodes.extend(split_nodes)
+            
+    return  new_nodes
+            
 
 def split_nodes_link(old_nodes):
     pass
