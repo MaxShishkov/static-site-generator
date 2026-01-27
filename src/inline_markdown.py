@@ -1,6 +1,11 @@
 from src.textnode import TextNode, TextType
 import re
 
+DELIMS = {
+    TextType.BOLD: "**",
+    TextType.ITALIC: "_",
+    TextType.CODE: "`",
+}
 
 def split_nodes_delimiter(old_nodes:list[TextNode], delimiter:str, text_type:TextType) -> list[TextNode]:
     new_nodes = []
@@ -99,3 +104,18 @@ def split_nodes_link(old_nodes):
             new_nodes.extend(split_nodes)
             
     return  new_nodes
+
+
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.TEXT)]
+    for text_type in TextType:
+        if text_type == TextType.TEXT:
+            continue
+        if text_type == TextType.IMAGE:
+            nodes = split_nodes_image(nodes)
+        elif text_type == TextType.LINK:
+            nodes = split_nodes_link(nodes)
+        else:
+            nodes = split_nodes_delimiter(nodes, DELIMS[text_type], text_type)
+            
+    return nodes
