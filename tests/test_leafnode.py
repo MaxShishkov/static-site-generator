@@ -56,3 +56,6 @@ class TestLeafNode(unittest.TestCase):
 
         self.assertIn('src="address.com"', html_str)
         self.assertIn('alt="alt text"', html_str)
+        
+if __name__ == "__main__":
+    unittest.main()

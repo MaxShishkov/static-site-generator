@@ -111,3 +111,6 @@ class TestParentNode(unittest.TestCase):
         
         repr_str = f"ParentNode({tag}, {children}, {prop})"
         self.assertEqual(repr(node), repr_str)
+
+if __name__ == "__main__":
+    unittest.main()
