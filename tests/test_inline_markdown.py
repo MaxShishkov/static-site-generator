@@ -4,6 +4,7 @@ from src.textnode import TextNode, TextType
 from src.inline_markdown import split_nodes_delimiter
 from src.inline_markdown import extract_markdown_images, extract_markdown_links
 from src.inline_markdown import split_nodes_image, split_nodes_link
+from src.inline_markdown import text_to_textnodes
 
 
 
@@ -383,6 +384,85 @@ class TestSplitNodeDelim(unittest.TestCase):
             new_nodes,
         )
         
+    def test_text_to_textnode_bold(self):
+        text = "This is **text**" 
+        nodes = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+        ]
+        
+        self.assertListEqual(nodes, expected)
+        
+    def test_text_to_textnode_italic(self):
+        text = "This is _text_" 
+        nodes = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.ITALIC),
+        ]
+        
+        self.assertListEqual(nodes, expected)
+        
+    def test_text_to_textnode_code(self):
+        text = "This is `code`" 
+        nodes = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+        ]
+        
+        self.assertListEqual(nodes, expected)
+        
+    def test_text_to_textnode_image(self):
+        text = "This is ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg)" 
+        nodes = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+        ]
+        
+        self.assertListEqual(nodes, expected)
+        
+    def test_text_to_textnode_link(self):
+        text = "This is [link](https://example.dev)" 
+        nodes = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://example.dev"),
+        ]
+        
+        self.assertListEqual(nodes, expected)
+        
+    def test_text_to_textnode_bold_multipe(self):
+        text = "This is **text** and **text**" 
+        nodes = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+        ]
+        
+        self.assertListEqual(nodes, expected)
+        
+    def test_text_to_textnode_all(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://example.dev)" 
+        nodes = text_to_textnodes(text)
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://example.dev"),
+        ]
+        
+        self.assertListEqual(nodes, expected)
         
 if __name__ == "__main__":
     unittest.main()
