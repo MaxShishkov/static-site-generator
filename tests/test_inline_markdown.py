@@ -2,6 +2,7 @@ import unittest
 
 from src.textnode import TextNode, TextType
 from src.inline_markdown import split_nodes_delimiter
+from src.inline_markdown import extract_markdown_images, extract_markdown_links
 
 
 
@@ -123,3 +124,47 @@ class TestSplitNodeDelim(unittest.TestCase):
         ]
         
         self.assertEqual(new_nodes, result_list)
+        
+    def test_extract_markdown_images_multiple(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        result = extract_markdown_images(text)
+        expected = [
+            ("rick roll", "https://i.imgur.com/aKaOqIh.gif"),
+            ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg"),
+        ]
+        
+        self.assertEqual(result, expected)
+        
+    def test_extract_markdown_images(self):
+        text = "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        matches = extract_markdown_images(text)
+        expected = [("image", "https://i.imgur.com/zjjcJKZ.png")]
+        self.assertListEqual(expected, matches)
+        
+    def test_extract_markdown_images_no_match(self):
+        text = "This is text with a  and "
+        result = extract_markdown_images(text)
+        
+        self.assertEqual(result, [])
+        
+    def test_extract_markdown_links_multiple(self):
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        result = extract_markdown_links(text)
+        expected = [
+            ("to boot dev", "https://www.boot.dev"),
+            ("to youtube", "https://www.youtube.com/@bootdotdev"),
+        ]
+        
+        self.assertEqual(result, expected)
+        
+    def test_extract_markdown_links(self):
+        text = "This is text with a link [to example dev](https://www.example.dev)"
+        result = extract_markdown_links(text)
+        expected = [
+            ("to example dev", "https://www.example.dev"),
+        ]
+        
+        self.assertEqual(result, expected)
+
+if __name__ == "__main__":
+    unittest.main()
