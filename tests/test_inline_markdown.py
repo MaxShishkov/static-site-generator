@@ -8,7 +8,7 @@ from src.inline_markdown import text_to_textnodes
 
 
 
-class TestSplitNodeDelim(unittest.TestCase):
+class TestInlineMarkdown(unittest.TestCase):
     def test_split_code_block(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
         
