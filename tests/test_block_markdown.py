@@ -1,6 +1,7 @@
 import unittest
 
-from src.block_markdown import markdown_to_blocks
+from src.block_markdown import BlockType
+from src.block_markdown import markdown_to_blocks, block_to_blocktype
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -123,6 +124,84 @@ This is the same paragraph on a new line
                 "- This is a list\n- with items",
             ],
         )
+    
+    def test_block_to_blocktype_heading(self):
+        block = "# Heading"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.HEADING)
+        
+    def test_block_to_blocktype_heading2(self):
+        block = "## Heading"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.HEADING)
+        
+    def test_block_to_blocktype_heading6(self):
+        block = "###### Heading"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.HEADING)
+        
+    def test_block_to_blocktype_heading7(self):
+        block = "####### Heading"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.PARAGRAPH)
+        
+    def test_block_to_blocktype_code(self):
+        block = "```\npring(\"hello\")\n```"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.CODE)
+        
+    def test_block_to_blocktype_quote(self):
+        block = "> some quoute here"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.QUOTE)
+        
+    def test_block_to_blocktype_quote_multy(self):
+        block = "> some quoute here\n> quote continues\n> more quote"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.QUOTE)
+        
+    def test_block_to_blocktype_ul(self):
+        block = "- item1"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.UNORDERED_LIST)
+        
+    def test_block_to_blocktype_ul_mult(self):
+        block = "- item1\n- item2\n- item3"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.UNORDERED_LIST)
+        
+    def test_block_to_blocktype_ol(self):
+        block = "1. item1"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.ORDERED_LIST)
+        
+    def test_block_to_blocktype_ol_mult(self):
+        block = "1. item1\n2. item2\n3. item3"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.ORDERED_LIST)
+        
+    def test_block_to_blocktype_ol_bad_format(self):
+        block = "1. item1\n2. item2\n4. item3"
+        block_type = block_to_blocktype(block)
+        
+        self.assertIs(block_type, BlockType.PARAGRAPH)
+        
+    def test_block_to_blocktype_quote_bad_format(self):
+        block = "> some quoute here\n quote continues\n more quote"
+        block_type = block_to_blocktype(block)
+
+        self.assertIs(block_type, BlockType.PARAGRAPH)
     
 if __name__ == "__main__":
     unittest.main()
