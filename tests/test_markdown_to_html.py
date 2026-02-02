@@ -156,3 +156,6 @@ the **same** even with inline stuff
         
     def test_get_tag_h6(self):
         self.assertEqual("h6", get_tag(BlockType.HEADING, "###### Hello"))
+
+if __name__ == "__main__":
+    unittest.main()
