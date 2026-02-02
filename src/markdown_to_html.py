@@ -1,8 +1,8 @@
-from src.block_markdown import *
-from src.htmlnode import HTMLNode, ParentNode
-from src.inline_markdown import text_to_textnodes
-from src.text_node_to_html_node import text_node_to_html_node
-from src.textnode import TextNode, TextType
+from block_markdown import *
+from htmlnode import HTMLNode, ParentNode
+from inline_markdown import text_to_textnodes
+from text_node_to_html_node import text_node_to_html_node
+from textnode import TextNode, TextType
 
     
 BLOCK_TAGS = {
@@ -91,8 +91,6 @@ def textblock_to_htmlnode(block_type: BlockType, text:str) -> HTMLNode:
     else:
         if block_type == BlockType.QUOTE:
             children = text_to_children(text)
-            p_node = ParentNode("p", children, None)
-            children = [p_node]
         elif block_type == BlockType.UNORDERED_LIST:
             children = []
             lines = text.splitlines()
