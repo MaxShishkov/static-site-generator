@@ -125,6 +125,19 @@ This is the same paragraph on a new line
             ],
         )
     
+    def test_markdown_to_blocks_link_quote(self):
+        md = """
+> This is a quote
+> with **bold** text
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "> This is a quote\n> with **bold** text",
+            ],
+        )
+    
     def test_block_to_blocktype_heading(self):
         block = "# Heading"
         block_type = block_to_blocktype(block)
