@@ -18,7 +18,6 @@ def generate_page(from_path, template_path, dest_path, basepath):
     dest_path = str(dest_path)
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     
-    print(f"* Reading markdown file {from_path}")
     with open(from_path, "r", encoding="utf-8") as f:
         markdown = f.read()
         
